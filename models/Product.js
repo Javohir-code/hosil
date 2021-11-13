@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  productAmount: {
+      type: String,
+      required: true
+  },
   productAreaSize: {
     type: String,
     minlength: 2,
