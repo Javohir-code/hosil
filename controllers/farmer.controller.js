@@ -33,52 +33,52 @@ exports.farmerRegister = async (req, res, next) => {
 // @desc Farmers Login
 // @route POST api/farmer/login
 // @access Public
-// exports.farmerLogin = async (req, res, next) => {
-//   try {
-//     const farmer = await Farmer.findOne({ msisdn: req.body.msisdn });
-//     if (!farmer) {
-//       return res.status(404).send("User not found!");
-//     }
-//     const data = await client.verify
-//       .services(config.serviceID)
-//       .verifications.create({
-//         to: `+${farmer.msisdn}`,
-//         channel: "sms",
-//       });
-//     console.log(data);
-//     return res
-//       .status(200)
-//       .send(_.pick(data, ["to", "channel", "status", "dateCreated"]));
-//   } catch (err) {
-//     return res.status(400).send("Error occured while login", err);
-//   }
-// };
+exports.farmerLogin = async (req, res, next) => {
+  try {
+    const farmer = await Farmer.findOne({ msisdn: req.body.msisdn });
+    if (!farmer) {
+      return res.status(404).send("User not found!");
+    }
+    const data = await client.verify
+      .services(config.serviceID)
+      .verifications.create({
+        to: `+${farmer.msisdn}`,
+        channel: "sms",
+      });
+    console.log(data);
+    return res
+      .status(200)
+      .send(_.pick(data, ["to", "channel", "status", "dateCreated"]));
+  } catch (err) {
+    return res.status(400).send("Error occured while login", err);
+  }
+};
 
 // @desc Verify the code
 // @route GET api/farmer/verify
 // @access Public
-// exports.verifyUser = async (req, res, next) => {
-//   try {
-//     const farmer = await Farmer.findOne({ msisdn: req.query.msisdn });
-//     if (!farmer) {
-//       throw new Error("Unable to login");
-//     }
-//     const info = await client.verify
-//       .services(config.serviceID)
-//       .verificationChecks.create({
-//         to: `+${farmer.msisdn}`,
-//         code: req.query.code,
-//       });
-//     if (info.status == "approved") {
-//       const token = farmer.generateAuthToken();
-//       return res
-//         .header("auth-user", token)
-//         .send(_.pick(info, ["to", "channel", "status", "dateCreated"]));
-//     }
-//   } catch (error) {
-//     return res.status(400).send("ERROR", error);
-//   }
-// };
+exports.verifyUser = async (req, res, next) => {
+  try {
+    const farmer = await Farmer.findOne({ msisdn: req.query.msisdn });
+    if (!farmer) {
+      throw new Error("Unable to login");
+    }
+    const info = await client.verify
+      .services(config.serviceID)
+      .verificationChecks.create({
+        to: `+${farmer.msisdn}`,
+        code: req.query.code,
+      });
+    if (info.status == "approved") {
+      const token = farmer.generateAuthToken();
+      return res
+        .header("auth-user", token)
+        .send(_.pick(info, ["to", "channel", "status", "dateCreated"]));
+    }
+  } catch (error) {
+    return res.status(400).send("ERROR", error);
+  }
+};
 
 // @desc Add Product
 // @route POST api/farmer/add-product
@@ -115,5 +115,29 @@ exports.addProduct = async (req, res, next) => {
     return res
       .status(400)
       .json({ success: false, message: `Error occured! ERROR: ${err}` });
+  }
+};
+
+// @desc Get Products By A User
+// @route GET api/farmer/products/:farmerId
+// @access Private
+exports.getProductsByUserId = async (req, res, next) => {
+  try {
+    const { farmerId } = req.params;
+    const farmer = await Farmer.findById(farmerId);
+    if (!farmer) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Farmer Not Found!" });
+    }
+
+    const products = await Product.find({ ownerId: farmer._id });
+    return res
+      .status(200)
+      .json({ success: true, data: { products: products, farmer: farmer } });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ success: false, data: `Error Occured. ERROR: ${err}` });
   }
 };

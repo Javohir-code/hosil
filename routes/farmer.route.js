@@ -12,6 +12,7 @@ const {
   addProduct,
   farmerLogin,
   verifyUser,
+  getProductsByUserId,
 } = require("../controllers/farmer.controller");
 
 const s3 = new aws.S3({ apiVersion: "2006-03-01" });
@@ -33,7 +34,8 @@ const upload = multer({
 
 router.route("/register").post(farmerRegister);
 router.route("/add-product").post(upload.array("photos"), addProduct);
-// router.route("/login").post(farmerLogin);
-// router.route("/verify").get(verifyUser);
+router.route("/products/:farmerId").get(getProductsByUserId);
+router.route("/login").post(farmerLogin);
+router.route("/verify").get(verifyUser);
 
 module.exports = router;
