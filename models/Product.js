@@ -1,23 +1,30 @@
 const mongoose = require("mongoose");
 
-const farmerSchema = new mongoose.Schema({
-  firstName: {
+const productSchema = new mongoose.Schema({
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Farmer",
+  },
+  title: {
     type: String,
     minlength: 2,
     maxlength: 50,
     trim: true,
     required: true,
   },
-  lastName: {
+  expectationPrice: {
+    type: Number,
+    required: true,
+  },
+  productAreaSize: {
     type: String,
     minlength: 2,
     maxlength: 50,
     trim: true,
     required: true,
   },
-  msisdn: {
+  description: {
     type: String,
-    unique: true,
     required: true,
   },
   viloyat: {
@@ -34,11 +41,8 @@ const farmerSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  organizationName: {
-    type: String,
-    minlength: 2,
-    maxlength: 50,
-    trim: true,
+  photos: {
+    type: Array,
     required: true,
   },
   createdAt: {
@@ -47,6 +51,6 @@ const farmerSchema = new mongoose.Schema({
   },
 });
 
-const Farmer = mongoose.model("Farmer", farmerSchema);
+const Product = mongoose.model("Product", productSchema);
 
-module.exports = Farmer;
+module.exports = Product;
