@@ -100,6 +100,7 @@ exports.addProduct = async (req, res, next) => {
       ownerId: req.body.ownerId,
       title: req.body.title,
       expectationPrice: req.body.expectationPrice,
+      productAmount: req.body.productAmount,
       productAreaSize: req.body.productAreaSize,
       description: req.body.description,
       viloyat: req.body.viloyat,
