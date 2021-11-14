@@ -17,8 +17,8 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   productAmount: {
-      type: String,
-      required: true
+    type: String,
+    required: true,
   },
   productAreaSize: {
     type: String,
@@ -47,7 +47,6 @@ const productSchema = new mongoose.Schema({
   },
   photos: {
     type: Array,
-    required: true,
   },
   createdAt: {
     type: Date,
