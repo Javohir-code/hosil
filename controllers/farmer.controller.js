@@ -85,18 +85,16 @@ exports.verifyUser = async (req, res, next) => {
 // @access Private
 exports.addProduct = async (req, res, next) => {
   try {
-    // if (req.files.length) {
-    //   var images = [];
-    //   var keys = [];
-    //   for (var i = 0; i < req.files.length; i++) {
-    //     images.push(req.files[i].location);
-    //   }
+    var images = [];
+    var keys = [];
+    for (var i = 0; i < req.files.length; i++) {
+      images.push(req.files[i].location);
+    }
 
-    //   for (var i = 0; i < images.length; i++) {
-    //     var ext = images[i].lastIndexOf("m/");
-    //     keys.push({ Key: images[i].substr(ext + 2) });
-    //   }
-    // }
+    for (var i = 0; i < images.length; i++) {
+      var ext = images[i].lastIndexOf("m/");
+      keys.push({ Key: images[i].substr(ext + 2) });
+    }
 
     const product = new Product({
       ownerId: req.body.ownerId,
@@ -107,10 +105,13 @@ exports.addProduct = async (req, res, next) => {
       description: req.body.description,
       viloyat: req.body.viloyat,
       tuman: req.body.tuman,
+      photos: images,
     });
 
     await product.save();
-    return res.status(201).json({ success: true, product: product });
+    return res
+      .status(201)
+      .json({ success: true, product: product, images: images });
   } catch (err) {
     return res
       .status(400)
